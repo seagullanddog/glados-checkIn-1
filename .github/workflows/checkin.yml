@@ -1,0 +1,40 @@
+name: GLaDOS-CheckIn
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths-ignore: 
+      - 'README.md'
+      - 'imgs/**'
+  schedule:
+    - cron: 30 1 * * *
+  watch:
+    types: [started]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: install axios
+        run: npm install axios@1.1.3
+      - name: install puppeteer-extra-plugin-stealth
+        run: npm install puppeteer@19.0.0 puppeteer-extra@3.3.4 puppeteer-extra-plugin-stealth@2.11.1
+      - name: CheckIn
+        run: node checkin.js
+        env:
+          PUSHPLUS: ${{ secrets.PUSHPLUS }}
+          COOKIES: ${{ secrets.COOKIES }}
+      - name: keep alive
+        uses: gautamkrishnar/keepalive-workflow@v1 # using the workflow with default settings
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 0
+          keep_minimum_runs: 10
+          delete_run_by_conclusion_pattern: success
