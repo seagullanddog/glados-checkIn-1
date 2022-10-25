@@ -29,7 +29,7 @@ jobs:
           PUSHPLUS: ${{ secrets.PUSHPLUS }}
           COOKIES: ${{ secrets.COOKIES }}
       - name: keep alive
-        uses: gautamkrishnar/keepalive-workflow@v1 # using the workflow with default settings
+        uses: gautamkrishnar/keepalive-workflow@v3 # using the workflow with default settings
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
         with:
